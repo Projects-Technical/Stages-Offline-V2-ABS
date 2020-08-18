@@ -1,6 +1,6 @@
-﻿Imports System.IO
+﻿Imports System.Net
+Imports System.IO
 Imports System.Xml
-Imports System.Net
 Imports System.Threading
 Imports System.Net.Sockets
 Imports System.Security.Cryptography
@@ -56,8 +56,10 @@ Public Class Form1
     Public leadin As Integer
     Dim runmode As Integer = 0
 
+    Dim testsite As Integer
+    Dim teststudio As Integer
 
-
+#Region "Security"
 
     Private Function SystemSerialNumber() As String
         ' Get the Windows Management Instrumentation object.
@@ -97,7 +99,9 @@ Public Class Form1
         End Using
 
     End Function
+#End Region
 
+#Region "Stages Class Info"
     Public Class usern
         Public Property ClientId As String
         Public Property ClientSecret As String
@@ -133,6 +137,8 @@ Public Class Form1
 
 
 
+
+
         Public Sub New(n As String, dt As DateTime, d As Integer, cid As Integer, instid As Integer, classt As String, cldate As String)
 
             Name = n
@@ -147,14 +153,235 @@ Public Class Form1
         End Sub
 
     End Class
+#End Region
 
+#Region "DLLABS"
+
+
+    Public Class condensedSession
+        Public Property name As String
+
+        Public Property starttime As DateTime
+
+        Public Property endtime As DateTime
+
+        Public Property duration As Integer
+
+        Public Property courseid As Integer
+
+
+        Public Sub New(n As String, st As DateTime, et As DateTime, dur As Integer, cid As Integer)
+
+            name = n
+
+            starttime = st
+
+            endtime = et
+
+            duration = dur
+
+            courseid = cid
+
+
+        End Sub
+    End Class
+
+    <Serializable()>
+    Public Class SessionsDetail
+        Public Property courseId As Integer
+        Public Property courseInstanceId As Integer
+        Public Property courseTemplateId As Integer
+        Public Property [date] As Date
+        Public Property startTime As TimeSpan
+        Public Property duration As Integer
+        Public Property name As String
+        Public Property level As String
+        Public Property levelTranslationKey As String
+        Public Property instructorNames As List(Of String)
+        Public Property instructorProfileIds As List(Of Integer)
+        Public Property status As String
+    End Class
+
+    Public Class Video
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class EnGb
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class ItIt
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class DeDe
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class FrBe
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class EsEs
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class FrFr
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class NlBe
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class Ca
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+    End Class
+
+    Public Class DetailsByLanguages
+        Public Property engb As EnGb
+        Public Property itit As ItIt
+        Public Property dede As DeDe
+        Public Property frbe As FrBe
+        Public Property eses As EsEs
+        Public Property frfr As FrFr
+        Public Property nlbe As NlBe
+        Public Property ca As Ca
+    End Class
+
+    Public Class HeroImageUrlByBrand
+        Public Property harbour As String
+        Public Property davidlloyd As String
+        Public Property germany As String
+        Public Property barcelona As String
+        Public Property netherlands As String
+        Public Property france As String
+        Public Property belgium As String
+        Public Property italy As String
+        Public Property ireland As String
+    End Class
+
+    Public Class LogoImageUrlByBrand
+        Public Property harbour As String
+        Public Property davidlloyd As String
+        Public Property germany As String
+        Public Property barcelona As String
+        Public Property netherlands As String
+        Public Property france As String
+        Public Property belgium As String
+        Public Property italy As String
+        Public Property ireland As String
+    End Class
+
+    Public Class Harbour
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class DavidLloyd
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class Barcelona
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class Germany
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class Netherlands
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class France
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class Belgium
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class Italy
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class Ireland
+        Public Property videoId As Object
+        Public Property videoType As Object
+    End Class
+
+    Public Class VideoByBrand
+        Public Property harbour As Harbour
+        Public Property davidlloyd As DavidLloyd
+        Public Property barcelona As Barcelona
+        Public Property germany As Germany
+        Public Property netherlands As Netherlands
+        Public Property france As France
+        Public Property belgium As Belgium
+        Public Property italy As Italy
+        Public Property ireland As Ireland
+    End Class
+
+    Public Class Template
+        Public Property templateId As Integer
+        Public Property title As String
+        Public Property subtitle As String
+        Public Property description As String
+        Public Property heroImageUrl As String
+        Public Property logoImageUrl As String
+        Public Property video As Video
+        Public Property detailsByLanguages As DetailsByLanguages
+        Public Property heroImageUrlByBrand As HeroImageUrlByBrand
+        Public Property logoImageUrlByBrand As LogoImageUrlByBrand
+        Public Property videoByBrand As VideoByBrand
+    End Class
+
+    Public Class DLLClassEntries
+        Public Property sessionsDetails As List(Of SessionsDetail)
+        Public Property templates As List(Of Template)
+    End Class
+
+
+#End Region
     Dim offlinelist As List(Of OfflineClasses) = New List(Of OfflineClasses)
     Dim sortedlist As List(Of OfflineClasses) = New List(Of OfflineClasses)
 
+    Dim abslist As List(Of SessionsDetail) = New List(Of SessionsDetail)
+    Dim sortedabs As List(Of SessionsDetail) = New List(Of SessionsDetail)
 
 
+
+    Dim dow As Day
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+
+
         'MsgBox(SystemSerialNumber)
         Me.BringToFront()
 
@@ -273,6 +500,10 @@ Public Class Form1
                     offlinelist.Add(New OfflineClasses(TimeSpan.Parse(xreader.Value), readid))
 
 
+                ElseIf lastname.ToLower = "absstudioid" Then
+                    teststudio = Integer.Parse(xreader.Value)
+                ElseIf lastname.ToLower = "abssiteid" Then
+                    testsite = Integer.Parse(xreader.Value)
 
 
                 End If
@@ -369,14 +600,14 @@ Public Class Form1
 
 
             runjsn = runjsn + 1
-                lblrunjson.Text = runjsn
+            lblrunjson.Text = runjsn
 
-                ListBox1.Items.Insert(0, "Polling for class updates" & " at " & Now.ToLongTimeString)
+            ListBox1.Items.Insert(0, "Polling for class updates" & " at " & Now.ToLongTimeString)
 
 
-                Dim myReq As HttpWebRequest
-                Dim myResp As HttpWebResponse
-                Dim reader As StreamReader
+            Dim myReq As HttpWebRequest
+            Dim myResp As HttpWebResponse
+            Dim reader As StreamReader
 
 
             Try
@@ -441,7 +672,49 @@ Public Class Form1
                         End If
                     Next
 
+                ElseIf runmode = 2 Then
+                    Try
 
+
+
+                        Dim wc As WebClient = New WebClient()
+                        Dim absjson As String = wc.DownloadString("https://staff-back.davidlloyd.co.uk/clubs/" & testsite & "/studio/" & teststudio & "/sessions/timetable")
+
+                        Dim nlist As DLLClassEntries = New DLLClassEntries
+
+                        nlist = JsonConvert.DeserializeObject(Of DLLClassEntries)(absjson)
+
+                        Dim sortdata As List(Of condensedSession) = New List(Of condensedSession)
+
+
+
+                        For Each c As SessionsDetail In nlist.sessionsDetails
+                            If c.courseTemplateId = 15865 Then
+
+
+                                sortdata.Add(New condensedSession(c.name, DateTime.Parse(c.date.ToShortDateString & " " & c.startTime.ToString), DateTime.Parse(c.date.ToShortDateString & " " & c.startTime.ToString).AddMinutes(c.duration), c.duration, c.courseId))
+                            End If
+
+                        Next
+
+                        Dim sortdatab As List(Of condensedSession) = New List(Of condensedSession)
+
+                        sortdatab = sortdata.OrderBy(Function(d) d.starttime).ToList
+
+
+                        Dim starttimes As String = ""
+
+                        For Each c As condensedSession In sortdatab
+
+                            modelc.Add(New stagesclass(c.courseid, c.name, c.starttime, c.duration, 0, teststudio, "CYCLONE VIRTUAL", "True"))
+
+                        Next
+
+
+
+                    Catch ex As Exception
+
+                    End Try
                 End If
 
 
